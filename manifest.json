@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "dizziee.screenshare-icon",
+  "name": "Screen Share",
+  "version": "1.2.0",
+  "author": "Dizziee",
+  "description": "Shows an indicator when screen sharing is active via PipeWire portals.",
+  "kinds": ["bar-widget"],
+  "entryPoints": { "barWidget": "Panel.qml" },
+  "barWidget": {
+    "displayName": "Screen Share",
+    "description": "Shows an indicator when screen sharing is active.",
+    "category": "Status",
+    "allowMultiple": false
+  }
+}
