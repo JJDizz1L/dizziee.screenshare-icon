@@ -54,7 +54,10 @@ BarWidget {
             && info.state === "running"
       })
       if (!root.active) root.owner = ""
-    } catch (e) { root.active = false }
+    } catch (e) {
+      root.active = false
+      root.owner = ""
+    }
   }
 
   // Resync: catches device/camera portal shares that never reach Hyprland's
