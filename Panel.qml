@@ -4,6 +4,8 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import qs.Ui
 import qs.Commons
+import qs.Commons as Commons
+import "Model.js" as Model
 
 BarWidget {
   id: root
@@ -23,10 +25,10 @@ BarWidget {
     target: Hyprland
     function onRawEvent(event) {
       if (!event || event.name !== "screencast") return
-      const parts = String(event.data).split(",")
-      if (parts[0] === "1") {
+      const owner = Model.ownerFromEventData(event.data)
+      if (owner !== "") {
         root.active = true
-        root.owner = parts[1] === "1" ? "window" : "monitor"
+        root.owner = owner
       } else if (root.active) {
         root.refresh()
       }
@@ -44,7 +46,8 @@ BarWidget {
 
   function updateStatus(text) {
     try {
-      var nodes = JSON.parse(String(text || "[]"))
+      var capped = String(text || "").slice(0, 512 * 1024)
+      var nodes = JSON.parse(capped.length ? capped : "[]")
       root.active = nodes.some(function(node) {
         if (node.type !== "PipeWire:Interface:Node") return false
         var info = node.info || {}
@@ -84,6 +87,17 @@ BarWidget {
   implicitWidth: visible ? button.implicitWidth : 0
   implicitHeight: visible ? button.implicitHeight : 0
 
+  Commons.Translations {
+    id: strings
+    directory: Qt.resolvedUrl("i18n")
+  }
+
+  function ownerLabel() {
+    if (root.owner === "window") return strings.t("screenshare.window")
+    if (root.owner === "monitor") return strings.t("screenshare.monitor")
+    return Model.cleanOwner(root.owner)
+  }
+
   WidgetButton {
     id: button
     anchors.fill: parent
@@ -91,6 +105,6 @@ BarWidget {
     text: "👀"
     fixedWidth: root.bar && root.bar.vertical ? -1 : Style.space(27)
     fixedHeight: root.bar && root.bar.vertical ? Style.space(26) : -1
-    tooltipText: root.active ? "Screen sharing active (" + root.owner + ")" : "ScreenSharing Active"
+    tooltipText: root.active ? strings.t("screenshare.active").arg(ownerLabel()) : strings.t("screenshare.idle")
   }
 }

@@ -36,6 +36,10 @@ Configuration lives in `~/.config/omarchy/shell.json`.
 
 No configurable options.
 
+## Behavior
+
+Resyncs against `pw-dump` every 2 minutes while idle and every 5 seconds while a share is active, so a share's end is noticed even if the Hyprland socket event is missed. No network access; all data stays local.
+
 ## Preview
 
 ![preview](preview.png)
